@@ -12,6 +12,7 @@ import {
   PRESETS,
 } from "@/lib/rocket-lab/parts";
 import type {
+  AssembledRocket,
   BodyId,
   EngineId,
   FinId,
@@ -20,45 +21,52 @@ import type {
   RocketDesign,
 } from "@/lib/rocket-lab/types";
 
+import { HangarStats } from "@/components/rocket-lab/hangar-stats";
+
 export function HangarPanel({
   design,
+  rocket,
   onChange,
   onLaunch,
   onPreset,
 }: {
   design: RocketDesign;
+  rocket: AssembledRocket;
   onChange: (next: RocketDesign) => void;
   onLaunch: () => void;
   onPreset: (next: RocketDesign) => void;
 }) {
   return (
-    <aside className="pointer-events-auto flex h-full max-h-full w-full flex-col overflow-hidden rounded-3xl border border-white/15 bg-[#0b1628]/88 shadow-[0_20px_80px_rgba(0,0,0,0.45)] backdrop-blur-md md:w-[420px]">
-      <div className="border-b border-white/10 px-4 py-3">
+    <aside className="pointer-events-auto flex h-full max-h-full w-full flex-col overflow-hidden rounded-t-3xl border border-white/15 bg-[#0b1628]/92 shadow-[0_20px_80px_rgba(0,0,0,0.45)] backdrop-blur-md md:rounded-3xl md:w-[420px]">
+      <div className="border-b border-white/10 px-3 py-2.5 sm:px-4 sm:py-3">
         <p className="font-mono text-[10px] tracking-[0.22em] text-cyan-200/80 uppercase">
-          Hangar · Mission Control
+          Hangar
         </p>
         <h2
-          className="text-xl font-semibold text-white"
+          className="text-lg font-semibold text-white sm:text-xl"
           style={{ fontFamily: "var(--font-fredoka), Fredoka, sans-serif" }}
         >
           Build your rocket
         </h2>
-        <p className="mt-1 text-sm text-white/70">
+        <p className="mt-1 hidden text-sm text-white/70 sm:block">
           Pick parts. Reach space and the ship locks onto a road past Pluto.
           Stainless Bird is ~0.23 c. Light Bird is a 1.0 c dream.
         </p>
+        <div className="mt-2 md:hidden">
+          <HangarStats rocket={rocket} compact />
+        </div>
       </div>
 
       <ScrollArea className="min-h-0 flex-1">
-        <div className="space-y-4 px-4 py-3">
-          <div className="flex flex-wrap gap-1.5">
+        <div className="space-y-3 px-3 py-2 sm:space-y-4 sm:px-4 sm:py-3">
+          <div className="flex gap-1.5 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {PRESETS.map((preset) => (
               <Button
                 key={preset.id}
                 type="button"
                 size="sm"
                 variant="secondary"
-                className="h-8 rounded-full border border-white/10 bg-white/8 text-xs text-white hover:bg-white/14"
+                className="h-8 shrink-0 rounded-full border border-white/10 bg-white/8 text-xs text-white hover:bg-white/14"
                 onClick={() => onPreset(preset.design)}
               >
                 {preset.name}
@@ -128,9 +136,11 @@ export function HangarPanel({
           3…2…1… Launch!
         </Button>
         <p className="mt-1.5 text-center text-[11px] text-white/50">
-          Reach space → locked path to the heliopause
-          <br />
-          Cruise starts at 1× · Drag to look · Scroll to zoom
+          <span className="hidden sm:inline">
+            Reach space → locked path to the heliopause
+            <br />
+          </span>
+          Drag to look · pinch to zoom
         </p>
       </div>
     </aside>
@@ -170,7 +180,7 @@ function PartRow<Id extends NoseId | BodyId | FinId | EngineId>({
               )}
             >
               <span className="block text-sm font-medium">{option.kidName}</span>
-              <span className="mt-0.5 block text-[11px] leading-snug text-white/55">
+              <span className="mt-0.5 hidden text-[11px] leading-snug text-white/55 sm:block">
                 {option.blurb}
               </span>
             </button>

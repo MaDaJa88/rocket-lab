@@ -354,33 +354,40 @@ export function RocketLabApp() {
         />
       </div>
 
-      <header className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between p-3 sm:p-4">
-        <div className={cn("transition-opacity duration-[1400ms]", hudIdle && "opacity-40")}>
-          <p className="font-mono text-[10px] tracking-[0.22em] text-cyan-200/80 uppercase">
+      <header className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between gap-2 p-2 sm:p-4">
+        <div
+          className={cn(
+            "min-w-0 transition-opacity duration-[1400ms]",
+            hudIdle && "opacity-40",
+            phase === "hangar" && "hidden sm:block",
+          )}
+        >
+          <p className="hidden font-mono text-[10px] tracking-[0.22em] text-cyan-200/80 uppercase sm:block">
             Family Mission Control
           </p>
           <h1
-            className="text-2xl font-semibold drop-shadow-md sm:text-3xl"
+            className="text-xl font-semibold drop-shadow-md sm:text-3xl"
             style={{ fontFamily: "var(--font-fredoka), Fredoka, sans-serif" }}
           >
             Rocket Lab
           </h1>
         </div>
-        <div className={cn("pointer-events-auto flex gap-1.5", fadeWhenIdle)}>
+        <div className={cn("pointer-events-auto ml-auto flex shrink-0 gap-1 sm:gap-1.5", fadeWhenIdle)}>
           <Button
             type="button"
             variant="secondary"
             size="sm"
-            className="h-9 rounded-full border border-white/15 bg-black/35 text-white hover:bg-black/50"
+            className="h-8 rounded-full border border-white/15 bg-black/35 px-2.5 text-xs text-white hover:bg-black/50 sm:h-9 sm:px-3 sm:text-sm"
             onClick={() => setShowIntro(true)}
           >
-            How it works
+            <span className="sm:hidden">Help</span>
+            <span className="hidden sm:inline">How it works</span>
           </Button>
           <Button
             type="button"
             variant="secondary"
             size="sm"
-            className="h-9 rounded-full border border-white/15 bg-black/35 text-white hover:bg-black/50"
+            className="h-8 rounded-full border border-white/15 bg-black/35 px-2.5 text-xs text-white hover:bg-black/50 sm:h-9 sm:px-3 sm:text-sm"
             onClick={() => {
               const next = !muted;
               setMuted(next);
@@ -391,37 +398,38 @@ export function RocketLabApp() {
             aria-pressed={muted}
             title="Soft pads for the star road. Rumble on the climb. Mute anytime."
           >
-            {muted ? "Sound off" : "Sound on"}
+            {muted ? "Mute" : "Sound"}
           </Button>
           <Button
             type="button"
             variant="secondary"
             size="sm"
             className={cn(
-              "h-9 rounded-full border text-white",
+              "h-8 rounded-full border px-2.5 text-xs sm:h-9 sm:px-3 sm:text-sm",
               tvMode
-                ? "border-amber-300/60 bg-amber-400/25 hover:bg-amber-400/35"
-                : "border-white/15 bg-black/35 hover:bg-black/50",
+                ? "border-amber-300/60 bg-amber-400/25 text-white hover:bg-amber-400/35"
+                : "border-white/15 bg-black/35 text-white hover:bg-black/50",
             )}
             onClick={tvMode ? exitTv : enterTv}
             aria-pressed={tvMode}
             title="Fullscreen. Panels fade away. The journey loops."
           >
-            {tvMode ? "Exit TV" : "TV mode"}
+            {tvMode ? "Exit TV" : "TV"}
           </Button>
         </div>
       </header>
 
       {phase === "hangar" ? (
-        <div className="absolute top-20 left-3 z-20 max-w-[calc(100%-1.5rem)] sm:top-24 md:max-w-none">
+        <div className="absolute top-14 left-3 z-20 hidden max-w-[calc(100%-1.5rem)] md:block md:top-24">
           <HangarStats rocket={rocket} />
         </div>
       ) : null}
 
       {phase === "hangar" ? (
-        <div className="absolute inset-x-0 bottom-0 z-20 h-[min(52vh,34rem)] p-3 md:inset-y-20 md:right-3 md:left-auto md:h-auto md:w-auto md:p-0">
+        <div className="absolute inset-x-0 bottom-0 z-20 max-h-[min(58dvh,28rem)] p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:max-h-[min(52vh,34rem)] sm:p-3 md:inset-y-20 md:right-3 md:left-auto md:h-auto md:max-h-none md:w-auto md:p-0">
           <HangarPanel
             design={design}
+            rocket={rocket}
             onChange={setDesign}
             onLaunch={launch}
             onPreset={setDesign}
@@ -430,13 +438,23 @@ export function RocketLabApp() {
       ) : null}
 
       {inFlight ? (
-        <div className={cn("absolute top-20 left-3 z-20 sm:top-24", fadeWhenIdle)}>
+        <div
+          className={cn(
+            "absolute inset-x-2 top-12 z-20 sm:inset-x-auto sm:left-3 sm:top-24",
+            fadeWhenIdle,
+          )}
+        >
           <FlightHud telemetry={telemetry} />
         </div>
       ) : null}
 
       {telemetry.voyage && inFlight ? (
-        <div className={cn("absolute inset-x-0 bottom-3 z-20 flex justify-center px-3", fadeWhenIdle)}>
+        <div
+          className={cn(
+            "absolute inset-x-0 bottom-0 z-20 flex justify-center px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:bottom-3 sm:px-3 sm:pb-0",
+            fadeWhenIdle,
+          )}
+        >
           <VoyageLegend telemetry={telemetry} warp={cruiseWarp} onWarp={setWarp} />
         </div>
       ) : null}

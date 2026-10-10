@@ -4,8 +4,31 @@ import { designHint } from "@/lib/rocket-lab/parts";
 import { formatLightSpeed } from "@/lib/rocket-lab/report";
 import type { AssembledRocket } from "@/lib/rocket-lab/types";
 
-export function HangarStats({ rocket }: { rocket: AssembledRocket }) {
+export function HangarStats({
+  rocket,
+  compact = false,
+}: {
+  rocket: AssembledRocket;
+  compact?: boolean;
+}) {
   const hints = designHint(rocket);
+
+  if (compact) {
+    return (
+      <div className="rounded-xl border border-white/10 bg-white/5 px-2.5 py-2 font-mono text-[10px] text-cyan-50">
+        <div className="flex flex-wrap gap-x-3 gap-y-1">
+          <MiniStat k="TWR" v={rocket.twr.toFixed(2)} ok={rocket.canLiftOff} />
+          <MiniStat k="Δv" v={`${(rocket.deltaV / 1000).toFixed(1)} km/s`} ok={rocket.deltaV > 3400} />
+          <MiniStat k="c" v={formatLightSpeed(rocket.topSpeedC)} ok={rocket.topSpeedC >= 0.05} />
+          <MiniStat k="Fins" v={rocket.stable ? "OK" : "Wobbly"} ok={rocket.stable} />
+        </div>
+        <p className="mt-1.5 line-clamp-2 text-[11px] leading-snug text-white/75">
+          {hints.lift} {hints.speed}
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="pointer-events-none w-[min(100%,22rem)] rounded-2xl border border-white/15 bg-[#071018]/78 px-4 py-3 text-white shadow-2xl backdrop-blur-md">
       <p className="font-mono text-[10px] tracking-[0.2em] text-cyan-200/80 uppercase">
@@ -31,6 +54,15 @@ export function HangarStats({ rocket }: { rocket: AssembledRocket }) {
         <li>• {hints.speed}</li>
       </ul>
     </div>
+  );
+}
+
+function MiniStat({ k, v, ok }: { k: string; v: string; ok: boolean }) {
+  return (
+    <span className={ok ? "text-emerald-300" : "text-amber-300"}>
+      <span className="text-white/45">{k} </span>
+      {v}
+    </span>
   );
 }
 

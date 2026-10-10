@@ -11,49 +11,58 @@ export function FlightHud({ telemetry }: { telemetry: Telemetry }) {
   if (telemetry.voyage) {
     return (
       <div className="pointer-events-none flex w-full max-w-xl flex-col gap-2">
-        <div className="rounded-2xl border border-white/15 bg-[#071018]/75 px-4 py-3 backdrop-blur-md">
+        <div className="rounded-2xl border border-white/15 bg-[#071018]/80 px-3 py-2 backdrop-blur-md sm:px-4 sm:py-3">
           <p className="font-mono text-[10px] tracking-[0.2em] text-cyan-200/80 uppercase">
             Cruise
           </p>
           <p
-            className="text-lg text-white"
+            className="text-base leading-snug text-white sm:text-lg"
             style={{ fontFamily: "var(--font-fredoka), Fredoka, sans-serif" }}
           >
             {telemetry.phaseLabel}
           </p>
-          <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1.5 font-mono text-xs text-cyan-50 sm:grid-cols-3">
+          <div className="mt-1.5 grid grid-cols-2 gap-x-3 gap-y-1 font-mono text-[11px] text-cyan-50 sm:mt-2 sm:grid-cols-3 sm:gap-y-1.5 sm:text-xs">
             <Meter label="From Terra" value={formatAU(telemetry.voyageAU)} />
             <Meter label="Vs light" value={formatLightSpeed(telemetry.speedC)} />
-            <Meter label="Story time" value={formatDuration(telemetry.voyageTime)} />
             <Meter label="Next" value={telemetry.nextStopName} />
-            <Meter label="ETA next" value={formatDuration(telemetry.etaNext)} />
-            <Meter label="Light-lag next" value={formatDuration(lightTimeSeconds(Math.max(0, telemetry.nextStopAU - telemetry.voyageAU)))} />
+            <Meter label="ETA" value={formatDuration(telemetry.etaNext)} />
+            <Meter
+              label="Story time"
+              value={formatDuration(telemetry.voyageTime)}
+              className="hidden sm:block"
+            />
+            <Meter
+              label="Light-lag"
+              value={formatDuration(
+                lightTimeSeconds(Math.max(0, telemetry.nextStopAU - telemetry.voyageAU)),
+              )}
+              className="hidden sm:block"
+            />
           </div>
           {telemetry.flybyId ? (
             <>
-              <p className="mt-2 text-sm leading-relaxed text-white/90">{telemetry.flybyKid}</p>
-              <p className="mt-1 font-mono text-[11px] leading-relaxed text-cyan-100/75">
-                {telemetry.flybyGeek}
+              <p className="mt-1.5 line-clamp-3 text-xs leading-relaxed text-white/90 sm:mt-2 sm:text-sm">
+                {telemetry.flybyKid}
               </p>
-              <p className="mt-2 text-[11px] text-amber-100/80">
-                Warp eases off inside a world’s neighborhood, then picks back up.
+              <p className="mt-1 hidden font-mono text-[11px] leading-relaxed text-cyan-100/75 sm:block">
+                {telemetry.flybyGeek}
               </p>
             </>
           ) : telemetry.speedC >= 0.99 ? (
-            <p className="mt-2 text-[11px] text-cyan-200/85">
+            <p className="mt-1.5 hidden text-[11px] text-cyan-200/85 sm:block">
               Photon Heart: this is light speed. A radio call and the ship arrive together.
             </p>
           ) : telemetry.speedC >= 0.04 ? (
-            <p className="mt-2 text-[11px] text-cyan-200/85">
+            <p className="mt-1.5 hidden text-[11px] text-cyan-200/85 sm:block">
               Star drive {formatLightSpeed(telemetry.speedC)}. Light is still faster — that’s
               the lag number.
             </p>
           ) : (
-            <p className="mt-2 text-[11px] text-amber-200/80">
+            <p className="mt-1.5 text-[11px] text-amber-200/80">
               Chemical crawl. Warp a lot, or rebuild with Sun Torch / Photon Heart.
             </p>
           )}
-          <p className="mt-2 text-[11px] text-white/40">
+          <p className="mt-1.5 hidden text-[11px] text-white/40 sm:block">
             Drag to look around · Scroll to zoom · Path is locked
           </p>
         </div>
@@ -65,7 +74,7 @@ export function FlightHud({ telemetry }: { telemetry: Telemetry }) {
 
   return (
     <div className="pointer-events-none flex w-full max-w-xl flex-col gap-2">
-      <div className="rounded-2xl border border-white/15 bg-[#071018]/75 px-4 py-3 backdrop-blur-md">
+      <div className="rounded-2xl border border-white/15 bg-[#071018]/80 px-3 py-2 backdrop-blur-md sm:px-4 sm:py-3">
         <p className="font-mono text-[10px] tracking-[0.2em] text-cyan-200/80 uppercase">
           Telemetry
         </p>
@@ -92,16 +101,16 @@ export function FlightHud({ telemetry }: { telemetry: Telemetry }) {
             );
           })}
         </div>
-        <p className="mt-1.5 text-xs text-white/70">
+        <p className="mt-1 hidden text-xs text-white/70 sm:block">
           <span className="text-white/90">{layer.geekName}.</span> {layer.blurb}
         </p>
-        <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1.5 font-mono text-xs text-cyan-50 sm:grid-cols-3">
+        <div className="mt-1.5 grid grid-cols-2 gap-x-3 gap-y-1 font-mono text-[11px] text-cyan-50 sm:mt-2 sm:grid-cols-3 sm:gap-y-1.5 sm:text-xs">
           <Meter label="Height" value={formatKm(telemetry.altitude)} />
           <Meter label="Speed" value={formatSpeed(telemetry.speed)} />
           <Meter label="Vs light" value={formatLightSpeed(telemetry.speedC)} />
-          <Meter label="Highest" value={formatKm(telemetry.apoapsis)} />
-          <Meter label="Lowest" value={formatKm(telemetry.periapsis)} />
-          <Meter label="Top c" value={formatLightSpeed(telemetry.topSpeedC)} />
+          <Meter label="Highest" value={formatKm(telemetry.apoapsis)} className="hidden sm:block" />
+          <Meter label="Lowest" value={formatKm(telemetry.periapsis)} className="hidden sm:block" />
+          <Meter label="Top c" value={formatLightSpeed(telemetry.topSpeedC)} className="hidden sm:block" />
         </div>
         <div className="mt-3">
           <div className="mb-1 flex justify-between font-mono text-[10px] tracking-wide text-white/55 uppercase">
@@ -122,7 +131,7 @@ export function FlightHud({ telemetry }: { telemetry: Telemetry }) {
               : "Terra cannot pull you back — that's escape!"}
           </p>
         ) : null}
-        <p className="mt-2 text-[11px] text-white/40">
+        <p className="mt-1.5 hidden text-[11px] text-white/40 sm:block">
           Drag to look around · Scroll or pinch to zoom
         </p>
       </div>
@@ -130,9 +139,17 @@ export function FlightHud({ telemetry }: { telemetry: Telemetry }) {
   );
 }
 
-function Meter({ label, value }: { label: string; value: string }) {
+function Meter({
+  label,
+  value,
+  className,
+}: {
+  label: string;
+  value: string;
+  className?: string;
+}) {
   return (
-    <div>
+    <div className={className}>
       <div className="text-white/45">{label}</div>
       <div className="text-sm text-white">{value}</div>
     </div>
