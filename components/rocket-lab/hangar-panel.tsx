@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import {
   BODIES,
@@ -37,7 +36,7 @@ export function HangarPanel({
   onPreset: (next: RocketDesign) => void;
 }) {
   return (
-    <aside className="pointer-events-auto flex h-full max-h-full w-full flex-col overflow-hidden rounded-t-3xl border border-white/15 bg-[#0b1628]/92 shadow-[0_20px_80px_rgba(0,0,0,0.45)] backdrop-blur-md md:rounded-3xl md:w-[420px]">
+    <aside className="pointer-events-auto flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden rounded-t-3xl border border-white/15 bg-[#0b1628]/92 shadow-[0_20px_80px_rgba(0,0,0,0.45)] backdrop-blur-md md:h-[min(100%,40rem)] md:w-[420px] md:flex-none md:rounded-3xl">
       <div className="border-b border-white/10 px-3 py-2.5 sm:px-4 sm:py-3">
         <p className="font-mono text-[10px] tracking-[0.22em] text-cyan-200/80 uppercase">
           Hangar
@@ -57,7 +56,7 @@ export function HangarPanel({
         </div>
       </div>
 
-      <ScrollArea className="min-h-0 flex-1">
+      <div className="min-h-0 flex-1 touch-pan-y overflow-y-auto overscroll-contain">
         <div className="space-y-3 px-3 py-2 sm:space-y-4 sm:px-4 sm:py-3">
           <div className="flex gap-1.5 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {PRESETS.map((preset) => (
@@ -124,7 +123,7 @@ export function HangarPanel({
             </div>
           </div>
         </div>
-      </ScrollArea>
+      </div>
 
       <div className="border-t border-white/10 p-3">
         <Button

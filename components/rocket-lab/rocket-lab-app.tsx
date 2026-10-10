@@ -78,7 +78,7 @@ const LIVE_RESULTS = new Set(["orbit", "escape", "moon", "heliopause"]);
 
 /** Panels fade after this long without a touch; TV mode is quicker about it. */
 const HUD_IDLE_MS = 20_000;
-const HUD_IDLE_TV_MS = 8_000;
+const HUD_IDLE_TV_MS = 2_200;
 /** TV mode loops the journey: a long look at the edge, a short one at a crash. */
 const RELAUNCH_AFTER_EDGE_S = 45;
 const RELAUNCH_AFTER_FAIL_S = 12;
@@ -159,7 +159,9 @@ export function RocketLabApp() {
       window.clearTimeout(timer);
       timer = window.setTimeout(() => setIdle(true), delay);
     };
-    const events = ["pointerdown", "pointermove", "keydown", "wheel", "touchstart"] as const;
+    const events = tvMode
+      ? (["pointerdown", "keydown"] as const)
+      : (["pointerdown", "pointermove", "keydown", "wheel", "touchstart"] as const);
     for (const name of events) window.addEventListener(name, poke, { passive: true });
     return () => {
       window.clearTimeout(timer);
@@ -358,7 +360,7 @@ export function RocketLabApp() {
         <div
           className={cn(
             "min-w-0 transition-opacity duration-[1400ms]",
-            hudIdle && "opacity-40",
+            hudIdle && (tvMode ? "opacity-0" : "opacity-40"),
             phase === "hangar" && "hidden sm:block",
           )}
         >
@@ -426,7 +428,7 @@ export function RocketLabApp() {
       ) : null}
 
       {phase === "hangar" ? (
-        <div className="absolute inset-x-0 bottom-0 z-20 max-h-[min(58dvh,28rem)] p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:max-h-[min(52vh,34rem)] sm:p-3 md:inset-y-20 md:right-3 md:left-auto md:h-auto md:max-h-none md:w-auto md:p-0">
+        <div className="absolute inset-x-0 bottom-0 z-20 flex h-[min(62dvh,32rem)] flex-col p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:p-3 md:inset-y-20 md:right-3 md:left-auto md:h-auto md:w-auto md:p-0">
           <HangarPanel
             design={design}
             rocket={rocket}
