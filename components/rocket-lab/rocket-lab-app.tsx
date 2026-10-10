@@ -428,7 +428,7 @@ export function RocketLabApp() {
       ) : null}
 
       {phase === "hangar" ? (
-        <div className="absolute inset-x-0 bottom-0 z-20 flex h-[min(62dvh,32rem)] flex-col p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:p-3 md:inset-y-20 md:right-3 md:left-auto md:h-auto md:w-auto md:p-0">
+        <div className="absolute inset-x-0 bottom-0 z-20 flex h-[min(50dvh,28rem)] flex-col p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:p-3 md:inset-y-20 md:right-3 md:left-auto md:h-auto md:w-auto md:p-0">
           <HangarPanel
             design={design}
             rocket={rocket}

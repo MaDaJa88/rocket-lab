@@ -16,6 +16,7 @@ import {
   MathUtils,
   Mesh,
   MeshBasicMaterial,
+  PerspectiveCamera,
   Quaternion,
   Vector3,
 } from "three";
@@ -215,7 +216,7 @@ function FlightRig({
   const lastPtr = useRef({ x: 0, y: 0 });
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const pinch = useRef({ dist: 0, orbit: 42 });
-  const { scene, camera, gl } = useThree();
+  const { scene, camera, gl, size } = useThree();
   const sky = useRef(new Color("#87c6f5"));
   const hangarSpin = useRef(0);
   const haloRef = useRef<Mesh>(null);
@@ -268,9 +269,10 @@ function FlightRig({
   useEffect(() => {
     if (phase === "countdown") return;
     if (phase === "result") return;
+    const narrow = window.matchMedia("(max-width: 767px)").matches;
     orbitYaw.current = 0.62;
-    orbitPitch.current = phase === "hangar" ? 1.22 : 1.12;
-    orbitDist.current = phase === "hangar" ? 42 : 52;
+    orbitPitch.current = phase === "hangar" ? (narrow ? 1.05 : 1.22) : 1.12;
+    orbitDist.current = phase === "hangar" ? (narrow ? 34 : 42) : 52;
   }, [phase]);
 
   useEffect(() => {
@@ -463,8 +465,16 @@ function FlightRig({
       phaseLive.current === "hangar" ||
       phaseLive.current === "countdown" ||
       (phaseLive.current === "result" && !sim.airborne);
-    if (hangarView) _look.copy(PAD_LOOK);
-    else _look.copy(_pos);
+    if (hangarView) {
+      _look.copy(PAD_LOOK);
+      // The hangar sheet covers the lower half on a phone, so aim below the
+      // rocket and it sits in the open sky above the panel.
+      if (size.width < 768) {
+        const halfH =
+          Math.tan(((camera as PerspectiveCamera).fov * Math.PI) / 360) * orbitDist.current;
+        _look.y -= halfH * 0.62;
+      }
+    } else _look.copy(_pos);
 
     // Ease out to cruise distance once, unless the viewer has taken the wheel.
     const zoomTarget = cruiseZoomTarget.current;
